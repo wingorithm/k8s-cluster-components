@@ -43,7 +43,7 @@ jobs:
       - name: Build and push service-log Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./logservice
+          context: .
           push: true
           tags: ${{ steps.meta_a.outputs.tags }}
           labels: ${{ steps.meta_a.outputs.labels }}
