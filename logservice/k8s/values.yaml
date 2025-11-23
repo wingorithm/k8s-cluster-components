@@ -12,6 +12,9 @@ service:
 environment:
   namespace: development
 
+#note that :
+#100Mi ~ 100MiB ~ 104 MB (megabyte) ~ 0.1 GB
+#1000m (millicore) ~ 100% of 1 full core cpu time
 resources:
   limits:
     cpu: 500m
@@ -23,6 +26,6 @@ resources:
 autoscaling:
   enabled: true
   minReplicas: 1
-  maxReplicas: 2
-  targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 80
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 20
+#  targetMemoryUtilizationPercentage: 70

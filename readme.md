@@ -126,7 +126,43 @@ sudo kubeadm join <master-ip>:6443 --token <TOKEN> --discovery-token-ca-cert-has
 -> [PROBABLE SOLUTION]F lannel, which (by default) creates an "overlay network" using the VXLAN
 VXLAN = This protocol wraps your pod traffic (like the ping) into UDP packets to send between nodes.
 Flannel's VXLAN backend requires UDP port 8472 to be open between all nodes.
+##TROUBLESHOOTING:
 so add `ufw allow 8472/udp`
 
-##Additional
+##Additional HPA simulations:
+
+###tools stacks : 
 ###service deployment with helm template
+[✅] use helm template in \logservice\k8s
+
+####longhorn
+To all nodes do:
+```shell
+# Install prerequisites
+sudo apt-get update
+sudo apt-get install open-iscsi nfs-common -y
+
+# Enable and start the iSCSI service
+sudo systemctl enable --now iscsid
+
+# Verify it's running
+sudo systemctl status iscsid
+```
+then install using helm chart
+```shell
+# Then install Longhorn
+kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/deploy/longhorn.yaml
+
+# Wait and verify all Longhorn pods are running
+kubectl get pods -n longhorn-system -w
+```
+longhorn will create storageClass, and also create PV automatically when there is pvc request
+
+####install postgres
+```shell
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm install my-postgresql bitnami/postgresql --version 18.1.11
+```
+
+
