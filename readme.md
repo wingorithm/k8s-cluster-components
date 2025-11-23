@@ -1,7 +1,7 @@
-1.2 Kubeadm Installation Checklist
+#Kubeadm Installation Checklist
 Use this checklist to ensure all prerequisite steps are completed in the correct order.
 
-Phase 1: All Nodes (Control Plane & Workers)
+##Phase 1: All Nodes (Control Plane & Workers)
 
 [✅] Provision cloud VMs (1 Control Plane, 2+ Workers).  
 [✅] Ensure nodes have unique hostnames
@@ -75,12 +75,12 @@ sudo tee /etc/apt/sources.list.d/kubernetes.list
 [✅] Hold package versions.  
 `sudo apt-mark hold kubelet kubeadm kubectl`
 
-Phase 2: Local Workstation
+##Phase 2: Local Workstation
 
 [✅] Install kubectl (if not already present)
 [✅] Install Lens Desktop by downloading it from the official website.  
 
-Phase 3: Control Plane Node Only
+##Phase 3: Control Plane Node Only
 
 [✅] Run cluster initialization:
 ```shell
@@ -103,7 +103,7 @@ kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/
 [✅] Verify control plane node moves to Ready status: `kubectl get nodes`
 [✅] CRITICAL: Save the kubeadm join... command printed to your terminal.  
 
-Phase 4: Worker Nodes Only
+##Phase 4: Worker Nodes Only
 
 [✅] For each worker node, run the kubeadm join command saved from Phase 3.  
 ```shell
@@ -112,12 +112,21 @@ sudo kubeadm join <master-ip>:6443 --token <TOKEN> --discovery-token-ca-cert-has
 ```
 [✅] On the control plane, verify all worker nodes are Ready: `kubectl get nodes`
 
-Phase 5: Local Workstation (GUI Connection)
+##Phase 5: Local Workstation (GUI Connection)
 
 [✅] Copy the contents of $HOME/.kube/config from your control plane to your local machine's ~/.kube/config file
 [✅] Open Lens. It should automatically detect and connect to your new cluster
 
-Phase 6: MONITORING
+##Phase 6: MONITORING Metrics Lens
 1. ensure metrics-server installed + prometheus-kube-stack
+
+##TROUBLESHOOTING:
 🆘 IF v1beta1.metrics.k8s.io FailedDiscoveryCheck
-->
+-> get into cp and very nod check the access by curl the service metrics-server servic
+-> [PROBABLE SOLUTION]F lannel, which (by default) creates an "overlay network" using the VXLAN
+VXLAN = This protocol wraps your pod traffic (like the ping) into UDP packets to send between nodes.
+Flannel's VXLAN backend requires UDP port 8472 to be open between all nodes.
+so add `ufw allow 8472/udp`
+
+##Additional
+###service deployment with helm template

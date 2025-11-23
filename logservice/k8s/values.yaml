@@ -1,0 +1,28 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/wingorithm/k8s-cluster-components/service-log
+  pullPolicy: IfNotPresent
+  tag: "release-dev"
+
+service:
+  type: ClusterIP
+  port: 8081
+  name: logservice-k8s
+environment:
+  namespace: development
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 384Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
