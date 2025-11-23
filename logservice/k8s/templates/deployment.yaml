@@ -13,6 +13,9 @@ spec:
     matchLabels:
       app: {{ .Values.service.name }}
   template:
+    metadata:
+      labels:
+        app: {{ .Values.service.name }}
     spec:
       containers:
         - name: {{ .Values.service.name }}
