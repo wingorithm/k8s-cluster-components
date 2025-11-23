@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/wingorithm/k8s-cluster-components/service-log
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   tag: "release-dev"
 
 service:
