@@ -18,7 +18,7 @@ public class LogScheduler {
     private String currentRequestId = UUID.randomUUID().toString();
     private String currentSpanId = UUID.randomUUID().toString();
 
-    @Scheduled(fixedRate = 10000)
+//    @Scheduled(fixedRate = 10000)
     public void logEveryTenSeconds() {
         int count = counter.incrementAndGet();
 
