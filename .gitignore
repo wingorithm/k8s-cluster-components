@@ -1,0 +1,6 @@
+/.idea/k8s-setup-checklist.iml
+/metrics-deployment.yml
+/metrics-server.yml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml

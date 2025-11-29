@@ -4,6 +4,7 @@ import com.logservice.logservice.dto.BookResponse;
 import com.logservice.logservice.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,5 +20,12 @@ public class BookController {
     @GetMapping
     public List<BookResponse> getBooks() {
         return bookService.getAllBooks();
+    }
+
+    @GetMapping("/{friendId}")
+    public List<BookResponse> getBooksFromFriend(
+            @PathVariable("friendId") int friendId
+    ) {
+        return bookService.getBooksFromFriend(friendId);
     }
 }

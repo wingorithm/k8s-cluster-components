@@ -25,14 +25,14 @@ resources:
 
 autoscaling:
   enabled: true
-  minReplicas: 1
+  minReplicas: 2
   maxReplicas: 10
   targetCPUUtilizationPercentage: 20
 #  targetMemoryUtilizationPercentage: 70
   behavior:
     scaleDown:
-      stabilizationWindowSeconds: 60 # Wait only 1 minute to wait (stable ?= scaledown)
+      stabilizationWindowSeconds: 30 # Wait only 30 sec to wait (stable ?= scaledown)
       policies:
         - type: Pods
-          value: 1
+          value: 3
           periodSeconds: 15 # Allow killing 1 pods every 15s (very aggressive)

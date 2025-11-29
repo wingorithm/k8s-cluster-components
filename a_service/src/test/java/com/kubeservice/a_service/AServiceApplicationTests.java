@@ -1,13 +1,13 @@
-package com.logservice.logservice;
+package com.kubeservice.a_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LogserviceApplicationTests {
+class AServiceApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+	@Test
+	void contextLoads() {
+	}
 
 }

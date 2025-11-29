@@ -1,7 +1,7 @@
-#Kubeadm Installation Checklist
+# Kubeadm Installation Checklist
 Use this checklist to ensure all prerequisite steps are completed in the correct order.
 
-##Phase 1: All Nodes (Control Plane & Workers)
+## Phase 1: All Nodes (Control Plane & Workers)
 
 [✅] Provision cloud VMs (1 Control Plane, 2+ Workers).  
 [✅] Ensure nodes have unique hostnames
@@ -75,12 +75,12 @@ sudo tee /etc/apt/sources.list.d/kubernetes.list
 [✅] Hold package versions.  
 `sudo apt-mark hold kubelet kubeadm kubectl`
 
-##Phase 2: Local Workstation
+## Phase 2: Local Workstation
 
 [✅] Install kubectl (if not already present)
 [✅] Install Lens Desktop by downloading it from the official website.  
 
-##Phase 3: Control Plane Node Only
+## Phase 3: Control Plane Node Only
 
 [✅] Run cluster initialization:
 ```shell
@@ -103,7 +103,7 @@ kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/
 [✅] Verify control plane node moves to Ready status: `kubectl get nodes`
 [✅] CRITICAL: Save the kubeadm join... command printed to your terminal.  
 
-##Phase 4: Worker Nodes Only
+## Phase 4: Worker Nodes Only
 
 [✅] For each worker node, run the kubeadm join command saved from Phase 3.  
 ```shell
@@ -112,15 +112,15 @@ sudo kubeadm join <master-ip>:6443 --token <TOKEN> --discovery-token-ca-cert-has
 ```
 [✅] On the control plane, verify all worker nodes are Ready: `kubectl get nodes`
 
-##Phase 5: Local Workstation (GUI Connection)
+## Phase 5: Local Workstation (GUI Connection)
 
 [✅] Copy the contents of $HOME/.kube/config from your control plane to your local machine's ~/.kube/config file
 [✅] Open Lens. It should automatically detect and connect to your new cluster
 
-##Phase 6: MONITORING Metrics Lens
+## Phase 6: MONITORING Metrics Lens
 1. ensure metrics-server installed + prometheus-kube-stack
 
-##TROUBLESHOOTING:
+### TROUBLESHOOTING:
 🆘 IF v1beta1.metrics.k8s.io FailedDiscoveryCheck
 -> get into cp and very nod check the access by curl the service metrics-server servic
 -> [PROBABLE SOLUTION]F lannel, which (by default) creates an "overlay network" using the VXLAN
@@ -129,13 +129,16 @@ Flannel's VXLAN backend requires UDP port 8472 to be open between all nodes.
 ##TROUBLESHOOTING:
 so add `ufw allow 8472/udp`
 
-##Additional HPA simulations:
+# Additional
+below is an advance improvement to our vanilla k8s cluster
 
-###tools stacks : 
-###service deployment with helm template
-[✅] use helm template in \logservice\k8s
+## HPA simulations:
+in order to run HPA simulations in our k8s cluster you need following tools stacks : 
+#### 1. service deployment with helm template
+[✅] you may use service that i provided, use helm template in \logservice\k8s
+[✅] ensure HPA rule implemented on kube config > Horizontal Pod Autoscalers > logservice-k8s
 
-####longhorn
+#### 2. longhorn
 To all nodes do:
 ```shell
 # Install prerequisites
@@ -156,13 +159,28 @@ kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/depl
 # Wait and verify all Longhorn pods are running
 kubectl get pods -n longhorn-system -w
 ```
-longhorn will create storageClass, and also create PV automatically when there is pvc request
 
-####install postgres
+#### 3. postgres
+since our service use DB connection, install postgres to your stateful set
 ```shell
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 helm install my-postgresql bitnami/postgresql --version 18.1.11
 ```
 
+#### 4. postman
+needed only to do performance test
 
+## Service Mesh implementation using istio:
+why need to use istio? https://www.youtube.com/watch?v=6zDrLvpfCK4
+do we need gateway service? Strictly speaking, No.
+
+in order to makes istio Service Mesh you need following tools stacks :
+
+#### 1. Kiali
+Understanding the "Sidecar" & Ingress Gateway + Kiali
+
+
+
+## Canary Deployment:
+Advanced Traffic Management we will learn about VirtualService, and DestinationRule
