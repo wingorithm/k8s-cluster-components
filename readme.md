@@ -200,8 +200,11 @@ istioctl version
 we use istio ambient follow this setup checklist
 https://istio.io/latest/docs/ambient/getting-started/
 
+`kubectl apply -f .\gateway.yml`
+`kubectl annotate gateway main-gateway networking.istio.io/service-type=ClusterIP --namespace=istio-system`
+
 #### 3. Kiali
-Understanding the "Sidecar" & Ingress Gateway + Kiali
+install kiali here with helm chart https://kiali.io/docs/installation/installation-guide/install-with-helm/
 
 
 
