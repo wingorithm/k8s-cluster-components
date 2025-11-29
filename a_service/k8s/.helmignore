@@ -1,0 +1,10 @@
+# Java build artifacts
+target/
+build/
+*.jar
+*.war
+
+# IDE settings
+.idea/
+.vscode/
+*.iml
