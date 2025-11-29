@@ -9,7 +9,7 @@ import java.util.List;
 @FeignClient(value = "logservice", url = "${url.logservice}")
 public interface LogServiceClient {
 
-    @GetMapping(value = "/api/books")
+    @GetMapping(value = "/api/logservice/books")
     List<BookResponse> getBookFromFriend();
 
 }
