@@ -177,7 +177,30 @@ do we need gateway service? Strictly speaking, No.
 
 in order to makes istio Service Mesh you need following tools stacks :
 
-#### 1. Kiali
+#### 1. multiple services
+use just use all service in this repo
+```shell
+cd /a_service/k8s
+helm install a-service ./ -n development
+
+cd /b_service/k8s
+helm install b-service ./ -n development
+```
+
+#### 2. istio and istio CLI
+go to your control plane and run below command to download the Istio CLI
+```shell
+curl -L https://istio.io/downloadIstio | sh -
+cd istio-1.28.0
+export PATH=$PWD/bin:$PATH
+
+#Check that you are able to run istioctl
+istioctl version
+```
+we use istio ambient follow this setup checklist
+https://istio.io/latest/docs/ambient/getting-started/
+
+#### 3. Kiali
 Understanding the "Sidecar" & Ingress Gateway + Kiali
 
 

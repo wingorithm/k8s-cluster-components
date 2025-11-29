@@ -36,3 +36,7 @@ autoscaling:
         - type: Pods
           value: 3
           periodSeconds: 15 # Allow killing 1 pods every 15s (very aggressive)
+
+ingress:
+  gatewayName: main-gateway
+  gatewayNamespace: istio-system

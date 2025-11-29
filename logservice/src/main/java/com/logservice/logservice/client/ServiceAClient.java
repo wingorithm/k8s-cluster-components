@@ -9,7 +9,7 @@ import java.util.List;
 @FeignClient(name = "service-a", url = "${url.a-service}")
 public interface ServiceAClient {
 
-    @GetMapping(value = "/api/books")
+    @GetMapping(value = "/api/a-service/books")
     List<BookResponse> getBookFromFriend();
 
 }

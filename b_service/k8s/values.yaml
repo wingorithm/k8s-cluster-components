@@ -32,3 +32,7 @@ autoscaling:
         - type: Pods
           value: 3
           periodSeconds: 15
+
+ingress:
+  gatewayName: main-gateway
+  gatewayNamespace: istio-system
