@@ -1,14 +1,14 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/wingorithm/k8s-cluster-components/a_service
+  repository: ghcr.io/wingorithm/k8s-cluster-components/b_service
   pullPolicy: Always
   tag: "release-dev"
 
 service:
   type: ClusterIP
-  port: 8082
-  name: a-service-k8s
+  port: 8083
+  name: b-service-k8s
 environment:
   namespace: development
 
