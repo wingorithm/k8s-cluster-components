@@ -15,7 +15,7 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final LogServiceClient logServiceClient;
-    private final ServiceAClient serviceBClient;
+    private final ServiceAClient serviceAClient;
 
     public List<BookResponse> getAllBooks() {
         return bookRepository.findAll().stream()
@@ -31,7 +31,7 @@ public class BookService {
         if (friendId == 0) {
             return logServiceClient.getBookFromFriend();
         } else {
-            return serviceBClient.getBookFromFriend();
+            return serviceAClient.getBookFromFriend();
         }
     }
 }
