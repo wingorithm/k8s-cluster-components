@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: prometheus-istio-monitor
+  namespace: istio-system
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchExpressions:
+      - key: istio-prometheus-ignore
+        operator: DoesNotExist
+  podMetricsEndpoints:
+    - path: /metrics
+      port: http-monitoring # Scrapes Istiod
+      interval: 15s
+    - path: /stats/prometheus
+      port: http-envoy-prom # Scrapes Gateways
+      interval: 15s
+    - path: /stats/prometheus
+      port: stats           # Scrapes Ztunnel (remember we use isio ambient not the sidecar wkwk)
+      interval: 15s
+  namespaceSelector:
+    matchNames:
+      - istio-system
