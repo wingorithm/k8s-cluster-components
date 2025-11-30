@@ -1,4 +1,9 @@
-# Kubeadm Installation Checklist
+# Kubeadm Installation Checklist #BuildK8sClusterWithMe
+Our Goal:
+1. set-up onprem vanilla k8s cluster
+2. connect it to our k8s IDE (LENS)
+[pict here]
+
 Use this checklist to ensure all prerequisite steps are completed in the correct order.
 
 ## Phase 1: All Nodes (Control Plane & Workers)
@@ -121,16 +126,37 @@ sudo kubeadm join <master-ip>:6443 --token <TOKEN> --discovery-token-ca-cert-has
 1. ensure metrics-server installed + prometheus-kube-stack
 
 ### TROUBLESHOOTING:
-🆘 IF v1beta1.metrics.k8s.io FailedDiscoveryCheck
+#### 🆘 IF v1beta1.metrics.k8s.io FailedDiscoveryCheck
 -> get into cp and very nod check the access by curl the service metrics-server servic
--> [PROBABLE SOLUTION]F lannel, which (by default) creates an "overlay network" using the VXLAN
+-> [PROBABLE SOLUTION] Flannel, which (by default) creates an "overlay network" using the VXLAN
 VXLAN = This protocol wraps your pod traffic (like the ping) into UDP packets to send between nodes.
 Flannel's VXLAN backend requires UDP port 8472 to be open between all nodes.
 ##TROUBLESHOOTING:
 so add `ufw allow 8472/udp`
 
+#### 🆘 IF metrics not fully shown on your LENS IDE
+-> check your prometheus UI -> targets -> look for node exporter
+[pict here]
+
+-> [PROBABLE SOLUTION] if above is the case than you exporter still using hostIP 🥱, change it to k8s ClusterIp
+```shell
+# in prometheus helm chart node exporter segments set hostNetwork into false
+prometheus-node-exporter:
+  hostNetwork: false
+  service:
+    type: ClusterIP
+    
+# in prometheus segments, add nodeAddresses
+prometheus:
+ prometheusSpec:
+    nodeAddresses:
+      - InternalIP
+```
+[result pic heere]
+
+---
 # Additional
-below is an advance improvement to our vanilla k8s cluster
+below is an opt advance improvement to our vanilla k8s cluster
 
 ## HPA simulations:
 in order to run HPA simulations in our k8s cluster you need following tools stacks : 
@@ -203,10 +229,62 @@ https://istio.io/latest/docs/ambient/getting-started/
 `kubectl apply -f .\gateway.yml`
 `kubectl annotate gateway main-gateway networking.istio.io/service-type=ClusterIP --namespace=istio-system`
 
+to register our services and database into istio service mesh we need to add label to the desired namespace
+for services:
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: development
+  uid: e2b7978f-c6e6-464e-ada4-979a5fc4b416
+  resourceVersion: '2752837'
+  creationTimestamp: '2025-11-23T03:32:52Z'
+  labels:
+    kubernetes.io/metadata.name: development
+    istio.io/dataplane-mode: ambient #add this to our business logic namespace
+#the rest of config...
+```
+
+for databases (since it on default namespace):
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: default
+  uid: a4db0581-e38f-4629-bde9-84681b957478
+  resourceVersion: '17'
+  creationTimestamp: '2025-11-02T06:55:15Z'
+  labels:
+    kubernetes.io/metadata.name: default
+    istio.io/dataplane-mode: ambient #add this
+```
 #### 3. Kiali
 install kiali here with helm chart https://kiali.io/docs/installation/installation-guide/install-with-helm/
 
+kiali need prometheus to get essential metrics in the cluster, so ensure you implement this, since prometheus has created in other namespace
+```yaml
+#on kiali yaml file
+spec:
+  # other config... 
+  external_services:
+    grafana:
+      # since we don't setup any dns to outside cluster so just us localhost, and we'll access via port forward
+      url: "http://localhost:9098"
+      internal_url: "http://prometheus-grafana.monitor.svc.cluster.local:80"
+    prometheus:
+      url: "http://prometheus-kube-prometheus-prometheus.monitor.svc.cluster.local:9090" #Add this
+```
 
+in this stag you'll able to see the mesh
+[result pict here]
 
-## Canary Deployment:
+know let's add a little bit of config so that you can get metrics from service mesh and abl to see traffic visualization inside the mesh
+apply `monitor-istio.yaml` and `monitor-apps.yaml`
+```shell
+kubectl apply -f .\monitor-istio.yaml
+kubectl apply -f .\monitor-apps.yaml  
+```
+
+[pict definition here]
+## Canary Deployment: <nanti aja ya, saya males hahaha>
 Advanced Traffic Management we will learn about VirtualService, and DestinationRule
