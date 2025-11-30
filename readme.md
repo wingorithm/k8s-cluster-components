@@ -1,11 +1,12 @@
 # Kubeadm Installation Checklist #BuildK8sClusterWithMe
 Use these checklists to ensure all prerequisite steps are completed in the correct order.
 
-[pict here]
+<img width="1560" height="826" alt="Opening" src="https://github.com/user-attachments/assets/c213e4ad-7177-4301-a8aa-3c8e5d3d2685" />
 
-## Our Goal:
+## Our Goal and Overview:
 1. 🏗️ Setup onprem vanilla k8s cluster
 2. 🔗 connect it to our k8s IDE (LENS)
+<img width="1560" height="2720" alt="k8s IDE dashboard" src="https://github.com/user-attachments/assets/c2951401-645b-4d91-acb3-9795d3a29a0e" />
 
 you can also read from original docs here
 - https://kubernetes.io/docs/reference/setup-tools/kubeadm/
@@ -15,7 +16,7 @@ you can also read from original docs here
 
 [✅] Provision cloud VMs (1 Control Plane, 2+ Workers). I use Vultr for the provisioning as shown below
 
-[pict here]
+<img width="1223" height="545" alt="Vultr" src="https://github.com/user-attachments/assets/50cb716f-5444-43ea-9236-a0f889893436" />
 
 [✅] Ensure nodes have unique hostnames
 
@@ -145,9 +146,10 @@ but it would be very wonderful if we are able to check it via our local right? (
 
 [✅] Copy the contents of $HOME/.kube/config from your control plane to your local machine's ~/.kube/config file
 
-[✅] Open Lens. It should automatically detect and connect to your new cluster
+[✅] Open Lens. It should automatically detect and connect to your new cluster (maybe without the metrics)
 
-[picture here]
+<img width="1917" height="1030" alt="LENS 1" src="https://github.com/user-attachments/assets/327b88cd-bf1a-4c70-9291-dcb11e693430" />
+
 
 ## Phase 6: MONITORING Metrics Lens 💹
 [✅] ensure metrics-server installed + prometheus-kube-stack
@@ -185,7 +187,7 @@ so add `ufw allow 8472/udp`
 
 #### 🆘 IF metrics not fully shown on your LENS IDE
 -> check your prometheus UI -> targets -> look for node exporter
-[pict here]
+<img width="1197" height="711" alt="Troubleshoot 2" src="https://github.com/user-attachments/assets/e7437a2c-8460-4219-acea-d122fa9a9c72" />
 
 -> [PROBABLE SOLUTION] if above is the case than you exporter still using hostIP 🥱, change it to k8s ClusterIp
 ```shell
@@ -201,13 +203,15 @@ prometheus:
     nodeAddresses:
       - InternalIP
 ```
-[result pic heere]
+<img width="1818" height="563" alt="Troubleshoot 2 - result" src="https://github.com/user-attachments/assets/5470a3af-458a-4c73-af13-fc4660284e57" />
 
 ---
 # Additional
 below is an opt advance improvement to our vanilla k8s cluster
 
 ## HPA simulations:
+<img width="1848" height="773" alt="image" src="https://github.com/user-attachments/assets/7149e0c7-0288-4d35-bb4e-6bf57d26985a" />
+
 in order to run HPA simulations in our k8s cluster you need following tools stacks : 
 #### 1. service deployment with helm template
 [✅] you may use service that i provided, use helm template in \logservice\k8s
@@ -265,7 +269,9 @@ cd /b_service/k8s
 helm install b-service ./ -n development
 ```
 
-#### 2. istio and istio CLI
+#### 2. istio and istio CLI (Service Mesh)
+<img width="1854" height="1838" alt="mesh" src="https://github.com/user-attachments/assets/435be1da-813f-427c-a5e4-cd09977bee13" />
+
 go to your control plane and run below command to download the Istio CLI
 ```shell
 curl -L https://istio.io/downloadIstio | sh -
@@ -327,17 +333,11 @@ spec:
       url: "http://prometheus-kube-prometheus-prometheus.monitor.svc.cluster.local:9090" #Add this
 ```
 
-in this stag you'll able to see the mesh
-
-[result pict here]
-
 know let's add a little bit of config so that you can get metrics from service mesh and abl to see traffic visualization inside the mesh
-apply `monitor-istio.yaml` and `monitor-apps.yaml`
+apply `monitor-istio.yaml`
 ```shell
 kubectl apply -f .\monitor-istio.yaml
-kubectl apply -f .\monitor-apps.yaml  
 ```
 
-[pict definition here]
 ## Canary Deployment: <nanti aja ya, saya males hahaha>
 Advanced Traffic Management we will learn about VirtualService, and DestinationRule
